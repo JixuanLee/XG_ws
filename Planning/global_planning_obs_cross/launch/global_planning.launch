@@ -1,0 +1,67 @@
+<launch>
+
+    <!-- 0.订阅话题 -->
+    <arg name="input_map_topic"  default="/grid_cost_map/global_occupancy_grid_map"/> 
+    <arg name="input_goal_topic" default="/move_base_simple/goal"/>
+
+    <!-- 1.标志位 -->
+    <arg name="reverse"      default="false" />     <!-- true表示可以倒退；false表示只能前进不能倒退  -->
+    <arg name="dubinsShot"   default="true" />      <!-- 切换Dubin路径的开关  -->
+    <arg name="dubins"       default="true" />      <!-- Dubin路径的切换开关: 若车子可以倒退，值为false  -->
+    <arg name="dubinsLookup" default="false" />     <!-- A flag to 通过查表进行Dubins启发, 极大潜在地加速搜索   [Tips]：该值与dubins同为1才有效  -->
+    <arg name="twoD"         default="false" />     <!-- A flag to toggle the 2D heuristic (true = on; false = off)  -->
+
+    <!-- 2.通用参数 -->
+    <arg name="iterations" default="10000000"/>     <!-- 最大迭代次数 -->
+    <arg name="bloating"   default="0.15"/>          <!-- 膨胀范围 -->
+    <arg name="width"      default="2.1"/>          <!-- 车辆本体宽度  [Tips]：这里只需要写最原始的车辆宽度，在程序中进行 width=width+2*bloating 的计算 -->
+    <arg name="length"     default="3.2"/>          <!-- 车辆本体长度  [Tips]：这里只需要写最原始的车辆长度，在程序中进行 length=length+2*bloating 的计算 -->
+    <arg name="r"          default="5.4"/>          <!-- 最小转弯半径 -->
+    <arg name="cellSize"   default="0.2"/>          <!-- 在2D网格中cell的大小 -->
+    <arg name="tieBreaker" default="0.5"/>          <!-- tieBreaker可以人为地增加 predecessor的代价，允许successor放置在同一个单元中。它的使用见algorithm.cpp -->
+
+    <!-- 3.启发式常数 -->
+    <arg name="factor2D"           default="3.449489"/> <!-- 用于确保具有障碍物的holonomic（全向）启发式可接受性的因子，default=sqrt(5) / sqrt(2) + 1，即3.449489742783178 -->
+    <arg name="penaltyTurning"     default="1.0"/>      <!-- 用于转向（选择非直线运动原语）时的移动成本惩罚 -->
+    <arg name="penaltyReversing"   default="2.0"/>      <!-- 用于倒车（选择运动原语大于2）时的移动成本惩罚 -->
+    <arg name="penaltyCOD"         default="2.0"/>      <!-- 用于改变方向（从原语小于3变为原语大于2）时的移动成本惩罚 -->
+    <arg name="dubinsShotDistance" default="150"/>      <!-- 阈值距离，当车辆距离目标的距离小于这个值时，将首次触发Dubins路径的分析解 -->
+    <arg name="dubinsStepSize"     default="4"/>        <!-- Dubins路径分析解的步长大小。这个值主要用于碰撞检测 -->
+
+    <!-- 4.其他设置 -->
+    <arg name="dubinsWidth"  default="50"/>       <!-- DUBINS查表的 Dubin搜索区域的宽度 -->
+    <arg name="minRoadWidth" default="2.2"/>      <!-- 路径平滑的当前车的最小行驶宽度 -->
+
+
+    <!-- 5.启动hybrid_astar 节点 -->
+    <node pkg="global_planning_obs_cross" name="global_planning" type="global_planning_oc" output="screen" > 
+
+        <param name="input_map_topic" value="$(arg input_map_topic)"/>
+        <param name="input_goal_topic" value="$(arg input_goal_topic)"/>
+        <param name="reverse" value="$(arg reverse)"/>
+        <param name="dubinsShot" value="$(arg dubinsShot)"/>
+        <param name="dubins" value="$(arg dubins)"/>
+        <param name="dubinsLookup" value="$(arg dubinsLookup)"/>
+        <param name="twoD" value="$(arg twoD)"/>
+        <param name="iterations" value="$(arg iterations)"/>
+        <param name="bloating" value="$(arg bloating)"/>
+        <param name="width" value="$(arg width)"/>
+        <param name="length" value="$(arg length)"/>
+        <param name="r" value="$(arg r)"/>
+        <param name="cellSize" value="$(arg cellSize)"/>
+        <param name="tieBreaker" value="$(arg tieBreaker)"/>
+        <param name="factor2D" value="$(arg factor2D)"/>
+        <param name="penaltyTurning" value="$(arg penaltyTurning)"/>
+        <param name="penaltyReversing" value="$(arg penaltyReversing)"/>
+        <param name="penaltyCOD" value="$(arg penaltyCOD)"/>
+        <param name="dubinsShotDistance" value="$(arg dubinsShotDistance)"/>
+        <param name="dubinsStepSize" value="$(arg dubinsStepSize)"/>
+        <param name="dubinsWidth" value="$(arg dubinsWidth)"/>
+        <param name="minRoadWidth" value="$(arg minRoadWidth)"/>
+
+    </node>
+
+    <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find hybrid_astar)/maps/map.yaml" /> -->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hybrid_astar)/launch/config.rviz" /> -->
+
+</launch>

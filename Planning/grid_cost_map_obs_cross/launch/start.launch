@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="global_laser_cloud_topic" default="/global_laser_cloud_map"/>
+    <arg name="global_map_res_"   default="0.2"/>
+
+    <node pkg="grid_cost_map_obs_cross" type="build_cost_map_oc" name="grid_cost_map" output="screen">
+        <param name="global_laser_cloud_topic" type="str"    value="$(arg global_laser_cloud_topic)"/>
+        <param name="global_map_res_"          type="double" value="$(arg global_map_res_)"/>
+        <rosparam command="load" file="$(find grid_cost_map)/config/global_map_filter_chain.yaml" />
+    </node>
+
+</launch>

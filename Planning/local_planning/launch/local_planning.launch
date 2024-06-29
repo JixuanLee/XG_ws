@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- 1. 输入话题参数 -->
+    <arg name="global_planning_path_topic"  default="/global_planning/sPath"/>
+    <arg name="odom_topic"                  default="/odom_by_imu_gnss"/>
+    <arg name="local_map_topic"             default="/grid_cost_map/local_occupancy_grid_map"/>
+
+    <!-- 2. 碰撞检测参数 -->
+    <arg name="LocalMapHalfWidth"   default="20"/>  <!-- 局部地图长度的一半 -->
+    <arg name="Veh_L"               default="3.2"/> <!-- 车辆长度，用于确定三碰撞圆圆心位置 -->
+    <arg name="OBS_DIS"             default="1.4"/> <!-- 碰撞圆半径，至少要大于车宽的一半 -->
+    <arg name="obs_path_len_min"    default="12"/>  <!-- 用于三碰撞圆检测路径长度m，基本保证目标路径在[0, obs_path_len_min]之间无碰撞 -->
+    <arg name="obs_path_len_max"    default="20"/>  <!-- 即使车速快，也不能超过的碰撞检测路径长度 -->
+
+    <!-- 3. 路径偏移参数 -->
+    <arg name="OFFSET_NUM"   default="25"/>  <!-- 偏移路径的个数 -->
+    <arg name="OFFSET_DIS"   default="0.4"/> <!-- 偏移路径时的偏移长度，单位：m -->
+    
+    <!-- 4. 预测部分纯跟踪参数 -->
+    <arg name="PRE_DIS"      default="3.0"/> <!-- 基本预瞄距离 -->
+    <arg name="u_weight"     default="0.35"/> <!-- 车速权重，在基本预瞄距离上增加基于车速的距离 -->
+    <arg name="Pdt_len_max"  default="300"/> <!-- track过程中使用单点预瞄的迭代次数。从Pdt_len_max按照Pdt_len_step步长减小到Pdt_len_min --> 
+    <arg name="Pdt_len_min"  default="100"/> <!-- 意味着在这个过程中，会尽可能的预瞄出一条长的、无碰撞的路径 -->/
+    <arg name="Pdt_len_step" default="10"/>
+    <arg name="ANGLE_MIN"    default="0.0001"/> <!-- 预测迭代过程中角速度的死区 -->
+    <arg name="U_MIN"        default="0.7"/> <!-- 预测迭代过程中车速的最小值 -->
+    <arg name="W_MAX"        default="0.8"/> <!-- 预测迭代过程中角速度的最大值 -->
+
+    <node pkg="local_planning" type="local_planning" name="local_planning" output="screen" >
+        <param name="global_planning_path_topic" type="str" value="$(arg global_planning_path_topic)"/>
+        <param name="odom_topic"                 type="str" value="$(arg odom_topic)"/>
+        <param name="local_map_topic"            type="str" value="$(arg local_map_topic)"/>
+
+        <param name="LocalMapHalfWidth" type="double" value="$(arg LocalMapHalfWidth)"/>
+        <param name="Veh_L"             type="double" value="$(arg Veh_L)"/>
+        <param name="OBS_DIS"           type="double" value="$(arg OBS_DIS)"/>
+        <param name="obs_path_len_min"  type="double" value="$(arg obs_path_len_min)"/>
+        <param name="obs_path_len_max"  type="double" value="$(arg obs_path_len_max)"/>
+
+        <param name="OFFSET_NUM"  type="int"    value="$(arg OFFSET_NUM)"/>
+        <param name="OFFSET_DIS"  type="double" value="$(arg OFFSET_DIS)"/>
+
+        <param name="PRE_DIS"       type="double" value="$(arg PRE_DIS)"/>
+        <param name="u_weight"      type="double" value="$(arg u_weight)"/>
+        <param name="Pdt_len_max"   type="int"    value="$(arg Pdt_len_max)"/>
+        <param name="Pdt_len_min"   type="int"    value="$(arg Pdt_len_min)"/>
+        <param name="Pdt_len_step"  type="int"    value="$(arg Pdt_len_step)"/>
+        <param name="ANGLE_MIN"     type="double" value="$(arg ANGLE_MIN)"/>
+        <param name="U_MIN"         type="double" value="$(arg U_MIN)"/>
+        <param name="W_MAX"         type="double" value="$(arg W_MAX)"/>
+    </node>
+
+</launch> 

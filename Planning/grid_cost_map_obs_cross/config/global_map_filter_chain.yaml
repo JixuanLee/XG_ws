@@ -1,0 +1,106 @@
+global_map_filters:
+
+  # 1.高程图
+  # 用于创建后续中值滤波的mask
+  - name: inpaint_mask
+    type: gridMapCv/InpaintFilter
+    params:
+      input_layer: elevation
+      output_layer: elevation_inpainted
+      radius: 0.8 #0.3
+
+  # 用中值滤波对高程图进行补洞
+  - name: inpaint
+    type: gridMapFilters/MedianFillFilter
+    params:
+      input_layer: elevation
+      output_layer: elevation_fill
+      fill_hole_radius: 0.8 #0.75
+      fill_mask_layer: elevation_inpainted
+      filter_existing_values: false
+
+  # 2.坡度
+  # 计算平面的法向量
+  - name: surface_normals_area
+    type: gridMapFilters/NormalVectorsFilter
+    params:
+      input_layer: elevation_fill
+      algorithm: area
+      output_layers_prefix: normal_vectors_
+      radius: 0.6 #0.4
+      normal_vector_positive_axis: z
+      parallelization_enabled: true
+      thread_number: 6
+
+  # 根据平面的法向量得到坡度值
+  - name: slope
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      output_layer: slope
+      expression: acos(normal_vectors_z)
+
+  # 3.粗糙度
+  # 用均值滤波使高程图光滑
+  - name: mean_in_radius
+    type: gridMapFilters/MeanInRadiusFilter
+    params:
+      input_layer: elevation_fill
+      output_layer: elevation_smooth
+      radius: 0.6 #0.3
+
+  # 用均值滤波前后高程图的差值的绝对值表示粗糙度
+  - name: roughness
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      output_layer: roughness
+      expression: abs(elevation_fill - elevation_smooth)
+
+  # 4.边界代价
+  # 用坡度的方差表示边界值
+  - name: edge_detection
+    type: gridMapFilters/SlidingWindowMathExpressionFilter
+    params:
+      input_layer: slope
+      output_layer: edges
+      expression: sqrt(sumOfFinites(square(slope - meanOfFinites(slope))) ./ numberOfFinites(slope)) # Standard deviation
+      compute_empty_cells: false
+      edge_handling: crop # options: inside, crop, empty, mean
+      window_length: 0.8 #0.4
+
+  # 5.最终的可通行度
+  # 由 坡度、粗糙度、边界代价 加权而来
+  - name: traversability
+    type: gridMapFilters/MathExpressionFilter
+    params:
+      output_layer: traversability_raw
+      # expression: 0.9 * ((slope )) + 0.8 * ((roughness))
+      # expression: 0.6 * (1.0 - (slope / 0.6)) + 0.4 * (1.0 - (roughness / 0.2))
+      # expression: (0.2 * slope) + (0.8 * roughness)
+      expression: (0.4 * slope) + (0.8 * roughness) + (0.5 * edges)
+
+  # 平滑部分区域
+  - name: traversability_mean
+    type: gridMapFilters/MeanInRadiusFilter
+    params:
+      input_layer: traversability_raw
+      output_layer: traversability
+      radius: 0.6 # in m.
+
+  # 对可通行度进行截断，范围限制在0~1
+  # Set lower threshold on traversability.
+  # - name: traversability_lower_threshold
+  #   type: gridMapFilters/ThresholdFilter
+  #   params:
+  #     condition_layer: traversability
+  #     output_layer: traversability
+  #     lower_threshold: 0.0
+  #     set_to: 0.0
+      
+  # Set upper threshold on traversability.
+  - name: traversability_upper_threshold
+    type: gridMapFilters/ThresholdFilter
+    params:
+      condition_layer: traversability
+      output_layer: traversability
+      upper_threshold: 1.0
+      set_to: 1.0 # Other uses: .nan, .inf
