@@ -1,0 +1,90 @@
+#此YAML中加载了多个Lidar，因此如果在未将所有雷达均接入主机时就启动ROS-SDK，则爆出警报显示MOSP超时是正常的。
+
+common:
+  msg_source: 1                                         #0: not use Lidar
+                                                        #1: packet message comes from online Lidar 连接在线雷达
+                                                        #2: packet message comes from ROS or ROS2 离线解析ROS数据包（rosbag）
+                                                        #3: packet message comes from Pcap file 离线解析Pcap数据包
+  send_packet_ros: false                                #true: Send packets through ROS or ROS2(Used to record packet) 只有在线录制Packet包才True，正常为False
+  send_point_cloud_ros: true                            #true: Send point cloud through ROS or ROS2 一般情况下均True
+lidar:
+#--------------------------------------------------- NO.1 - RS16 - Front ---------------------------------------------------# 
+  - driver:
+      lidar_type: RSHELIOS_16P     #LiDAR type - RS16, RS32, RSBP, RSHELIOS, RSHELIOS_16P, RS128, RS80, RSP128, RSP80, RSP48, RSM1, RSM2, RSEOS
+      msop_port: 1111              #Msop port of lidar
+      difop_port: 9999             #Difop port of lidar
+      start_angle: 0               #Start angle of point cloud
+      end_angle: 360               #End angle of point cloud 
+      wait_for_difop: true
+      min_distance: 0.2            #Minimum distance of point cloud
+      max_distance: 200            #Maximum distance of point cloud
+      use_lidar_clock: false       #True--Use the lidar clock as the message timestamp
+                                   #False-- Use the system clock as the timestamp
+      pcap_path: /home/vtie/lidar16A.pcap #The path of pcap file 请设置为本地
+    ros:
+      ros_frame_id: rslidar_16A                           #Frame id of packet message and point cloud message
+      ros_recv_packet_topic: /rslidar_packets_16A          #Topic used to receive lidar packets from ROS，用于录制包
+      ros_send_packet_topic: /rslidar_packets_16A          #Topic used to send lidar packets through ROS，用于录制包
+      ros_send_point_cloud_topic: /rslidar_points_16A      #Topic used to send point cloud through ROS,最直观的ROS话题
+
+
+#--------------------------------------------------- NO.2 - RSHELIOS_16P - Left ---------------------------------------------------# 
+  - driver:
+      lidar_type: RSHELIOS_16P     #LiDAR type - RS16, RS32, RSBP, RSHELIOS, RSHELIOS_16P, RS128, RS80, RSP128, RSP80, RSP48, RSM1, RSM2, RSEOS
+      msop_port: 2222              #Msop port of lidar
+      difop_port: 8888             #Difop port of lidar
+      start_angle: 0               #Start angle of point cloud
+      end_angle: 360               #End angle of point cloud 
+      wait_for_difop: true
+      min_distance: 0.2            #Minimum distance of point cloud
+      max_distance: 200            #Maximum distance of point cloud
+      use_lidar_clock: false       #True--Use the lidar clock as the message timestamp
+                                   #False-- Use the system clock as the timestamp
+      pcap_path: /home/vtie/lidar16B.pcap #The path of pcap file 请设置为本地
+    ros:
+      ros_frame_id: rslidar_16B                           #Frame id of packet message and point cloud message
+      ros_recv_packet_topic: /rslidar_packets_16B          #Topic used to receive lidar packets from ROS，用于录制包
+      ros_send_packet_topic: /rslidar_packets_16B          #Topic used to send lidar packets through ROS，用于录制包
+      ros_send_point_cloud_topic: /rslidar_points_16B      #Topic used to send point cloud through ROS,最直观的ROS话题
+
+
+#--------------------------------------------------- NO.3 - RSHELIOS_16P - Right ---------------------------------------------------# 
+  - driver:
+      lidar_type: RSHELIOS_16P     #LiDAR type - RS16, RS32, RSBP, RSHELIOS, RSHELIOS_16P, RS128, RS80, RSP128, RSP80, RSP48, RSM1, RSM2, RSEOS
+      msop_port: 3333              #Msop port of lidar
+      difop_port: 7777             #Difop port of lidar
+      start_angle: 0               #Start angle of point cloud
+      end_angle: 360               #End angle of point cloud 
+      wait_for_difop: true
+      min_distance: 0.2            #Minimum distance of point cloud
+      max_distance: 200            #Maximum distance of point cloud
+      use_lidar_clock: false       #True--Use the lidar clock as the message timestamp
+                                   #False-- Use the system clock as the timestamp
+      pcap_path: /home/vtie/lidar16C.pcap #The path of pcap file 请设置为本地
+    ros:
+      ros_frame_id: rslidar_16C                           #Frame id of packet message and point cloud message
+      ros_recv_packet_topic: /rslidar_packets_16C          #Topic used to receive lidar packets from ROS，用于录制包
+      ros_send_packet_topic: /rslidar_packets_16C          #Topic used to send lidar packets through ROS，用于录制包
+      ros_send_point_cloud_topic: /rslidar_points_16C      #Topic used to send point cloud through ROS,最直观的ROS话题
+
+
+#--------------------------------------------------- NO.4 - RSHELIOS - Middle ---------------------------------------------------# 
+  - driver:
+      lidar_type: RSHELIOS     #LiDAR type - RS16, RS32, RSBP, RSHELIOS, RSHELIOS_16P, RS128, RS80, RSP128, RSP80, RSP48, RSM1, RSM2, RSEOS
+      msop_port: 4444              #Msop port of lidar
+      difop_port: 6666             #Difop port of lidar
+      start_angle: 0               #Start angle of point cloud
+      end_angle: 360               #End angle of point cloud 
+      wait_for_difop: true
+      min_distance: 0.2            #Minimum distance of point cloud
+      max_distance: 200            #Maximum distance of point cloud
+      use_lidar_clock: false       #True--Use the lidar clock as the message timestamp
+                                   #False-- Use the system clock as the timestamp
+      pcap_path: /home/vtie/lidar32.pcap #The path of pcap file 请设置为本地
+    ros:
+      ros_frame_id: rslidar_32                           #Frame id of packet message and point cloud message
+      ros_recv_packet_topic: /rslidar_packets_32          #Topic used to receive lidar packets from ROS，用于录制包
+      ros_send_packet_topic: /rslidar_packets_32          #Topic used to send lidar packets through ROS，用于录制包
+      ros_send_point_cloud_topic: /rslidar_points_32      #Topic used to send point cloud through ROS,最直观的ROS话题
+
+

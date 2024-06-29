@@ -1,0 +1,12 @@
+<launch>
+
+    <node pkg="rslidar_sdk" name="rslidar_sdk_node" type="rslidar_sdk_node" output="screen">
+        <!-- 这是程序参数config.yaml的绝对路径，如果为空（默认），程序会自己寻找路径，读取名为config.yaml的文件；
+             如果给定value，则按照value值-->
+        <param name="config_path" value="" />
+    </node>
+
+    <!-- rviz -->
+    <!-- <node pkg="rviz" name="rviz" type="rviz" args="-d $(find rslidar_sdk)/rviz/rviz.rviz" /> -->
+
+</launch>
