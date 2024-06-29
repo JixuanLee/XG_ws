@@ -1,0 +1,21 @@
+<!-- 小车接受话题，开始运动 -->
+<launch>
+    <arg name="odom_topic_name" default="odom_scoutmini" />         <!--修改odom话题，由底盘发布-->
+    <arg name="cmd_topic_name" default="cmd_scoutmini" />           <!--修改cmd话题，由uwb控车时订阅-->
+
+    <!-- 1.将原始控制命令转成控制scoutmini小车的控制命令 -->
+    <node pkg="vehicle_control" type="cmd_scoutmini" name="cmd_scoutmini">
+        <remap from="cmd_scoutmini" to="$(arg cmd_topic_name)"/>
+    </node>
+
+    <!-- 2.给小车底盘can0进行配置授权 -->
+    <!-- 在launch中启动时间间隔太短，无法连通can0，因此单独执行 -->
+    <!-- <node pkg="vehicle_control" type="set_can0_scoutmini.sh" name="set_can0"/> -->
+
+    <!-- 3.小车底盘订阅发布的控制命令，开始运动；同时发布底盘的里程计信息 -->
+    <include file="$(find scout_bringup)/launch/scout_mini_robot_cmd.launch">
+        <arg name="odom_topic_name" default="$(arg odom_topic_name)" />
+        <arg name="cmd_topic_name" default="$(arg cmd_topic_name)" /> 
+    </include>
+
+</launch>

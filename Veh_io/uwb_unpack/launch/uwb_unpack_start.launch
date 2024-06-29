@@ -1,0 +1,11 @@
+<launch>
+    <!-- 1.给串口权限,首先需要在.sh文件中更改密码 -->
+    <!-- <node pkg="uwb_unpack" type="chmod_usb_anchor0.sh" name="chmod_usb_anchor0"/> -->
+
+    <!-- 2.启动解包程序,获得uwb输出数据 -->
+    <node pkg="uwb_unpack" type="uwb_unpack" name="uwb_unpack" output="screen" respawn="true"/>
+
+    <!-- 3.自行对uwb原始数据进行滤波处理，针对两个anchor时使用 -->
+    <!-- <node pkg="uwb_unpack" type="uwb_process" name="uwb_process" output="screen"/> -->
+
+</launch>

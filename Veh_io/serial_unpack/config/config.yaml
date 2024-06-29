@@ -1,0 +1,4 @@
+inclinometer:
+  port:     /dev/ttyUSB0
+  baudrate: 115200
+  timeout:  2000 # ms

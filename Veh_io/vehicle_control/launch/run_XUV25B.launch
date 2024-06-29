@@ -1,0 +1,20 @@
+<!-- 车辆XUV25B接受话题，开始运动 -->
+<launch>
+    <arg name="odom_topic_name" default="odom" />               <!--修改odom话题，由里程计发布-->
+    <arg name="cmd_topic_name" default="cmd_XUV25B" />          <!--修改cmd话题，由uwb控车时订阅-->
+    <arg name="can0_port_name" default="can0" />                 <!-- can0数据接口的名字 -->
+    <arg name="can1_port_name" default="can0" />                 <!-- can1数据接口的名字 -->
+
+    <!-- 1.将原始控制命令转成控制车辆的控制命令 -->
+    <node pkg="vehicle_control" type="cmd_XUV25B" name="cmd_XUV25B">
+        <remap from="cmd_XUV25B" to="$(arg cmd_topic_name)"/>
+    </node>
+
+    <!-- 2.车辆底盘订阅发布的控制命令，开始运动 -->
+    <include file="$(find can_unpack)/launch/can_unpack_start.launch">
+        <arg name="cmd_topic_name" default="$(arg cmd_topic_name)" /> 
+        <arg name="can0_port_name" default="$(arg can0_port_name)" /> 
+        <arg name="can1_port_name" default="$(arg can1_port_name)" /> 
+    </include>
+
+</launch>

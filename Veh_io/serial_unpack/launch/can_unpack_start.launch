@@ -1,0 +1,8 @@
+<launch>
+
+    <!-- 解包串口 -->
+    <node pkg="serial_unpack" type="serial_unpack" name="serial_unpack" output="screen">
+        <rosparam command="load" file="$(find serial_unpack)/config/config.yaml" />
+    </node>
+
+</launch>
