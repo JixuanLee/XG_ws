@@ -1,0 +1,9 @@
+uint8 id
+geometry_msgs/PoseWithCovariance position
+geometry_msgs/TwistWithCovariance relative_velocity
+
+uint8 dynamic_property
+float32 rcs
+uint8 prob_of_exist
+uint8 ambig_state
+uint8 invalid_state

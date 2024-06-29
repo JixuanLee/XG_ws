@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="staticyaml_dir" default="$(find lidar_preprocess)/config/static_params.yaml" />     
+    <arg name="isMultiLidar" default="true" />
+
+    <node pkg="lidar_preprocess" type="lidar_preprocess" name="lidar_preprocess" output="screen">
+        <param name="staticyaml_dir" value="$(arg staticyaml_dir)" />
+        <param name="isMultiLidar" value="$(arg isMultiLidar)" />
+    </node>
+  
+</launch>

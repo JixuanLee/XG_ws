@@ -1,0 +1,11 @@
+<launch>
+    <arg name="mode" default="file"/>               <!-- 从何处生成路路径   file——本地txt， uwb——uwb实时生成路径点 -->
+    <arg name="is_reverse_path" default="false"/>   <!-- 是否反向读取路径，只在mode为file时有效 -->
+
+    <!-- 读取txt中的路径，并以/path_reference话题发布 -->
+    <node pkg="path_generator" type="path_generate" name="path_generate" output="screen" required="true">
+        <param name="mode" type="string" value="$(arg mode)"/>
+        <param name="is_reverse_path" type="bool" value="$(arg is_reverse_path)"/>
+        <param name="is_roslaunch" type="bool" value="true"/>   <!-- 是否由roslaunch启动，影响后续工作路径，无须修改 -->
+    </node>
+</launch>

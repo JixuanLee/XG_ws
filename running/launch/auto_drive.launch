@@ -1,0 +1,37 @@
+<launch>
+
+    <!-- [0] 加载 车辆模型 -->
+    <include file="$(find common)/launch/veh_model.launch"/>
+
+    <!-- [1] 启动 传感器基础静态坐标变换 程序 -->
+    <include file="$(find common)/launch/sensors_static_tf.launch"/>
+
+    <!-- [2] 启动 雷达解包 程序 -->
+    <include file="$(find rslidar_sdk)/launch/multi_lidar_start.launch"/>
+
+    <!-- [3] 启动 can口 gnss imu radar数据收发解包 程序 -->
+    <include file="$(find can_unpack)/launch/can_unpack_start.launch"/>
+
+    <!-- [4] 启动 点云拼接&预处理 程序 -->
+    <include file="$(find lidar_preprocess)/launch/multi_lidar_preprocess.launch"/>
+
+    <!-- [5] 启动 加载地图 程序 -->
+    <include file="$(find ndt_localizer)/launch/map_loader.launch"/>
+
+    <!-- [6] 启动 NDT算法定位 程序 -->
+    <include file="$(find ndt_localizer)/launch/ndt_localizer_core.launch"/>
+
+    <!-- [7] 计算全局代价地图和局部代价地图 程序 -->
+    <include file="$(find grid_cost_map)/launch/start.launch" />
+
+    <!-- [8] 规划全局路径和局部路径 -->
+    <include file="$(find global_planning)/launch/start.launch" />
+    <include file="$(find local_planning)/launch/local_planning.launch" />
+
+    <!-- [9] 启动 路径跟随运动控制 程序 -->
+    <include file="$(find tracking)/launch/tracking.launch"/>
+
+    <!-- [10] 启动 rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find common)/rviz/control.rviz" />
+
+</launch>

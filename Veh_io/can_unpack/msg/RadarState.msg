@@ -1,0 +1,24 @@
+std_msgs/Header header
+bool    read_status
+bool    write_status
+uint16  max_distance
+bool    persistent_error
+bool    interference
+bool    temperature_error
+bool    temporary_error
+bool    voltage_error
+uint8   sensor_id
+uint8   sort_index
+uint8   radar_power_cfg
+bool    ctrl_relay_cfg
+uint8   output_type_cfg
+bool    send_quality_cfg
+bool    send_ext_info_cfg
+uint8   motion_rx_state
+bool    rcs_threshold
+
+uint8   version_major_release
+uint8   version_minor_release
+uint8   version_patch_level
+bool    version_extended_range
+bool    version_country_code

@@ -1,0 +1,11 @@
+bool    valid
+bool    active
+uint8   index
+uint8   type
+float64 min
+float64 max
+
+---
+bool    sucess
+uint8   n_of_cluster_filter_cfg
+uint8   n_of_object_filter_cfg

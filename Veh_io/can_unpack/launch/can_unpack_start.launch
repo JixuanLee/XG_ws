@@ -1,0 +1,38 @@
+<launch>
+    <arg name="cmd_topic_name" default="/cmd_XUV25B" /> 
+    <arg name="can0_port_name" default="can0"/>      <!-- can0数据接口的名字 -->
+    <arg name="can1_port_name" default="can1"/>      <!-- can1数据接口的名字 -->
+
+
+    <!-- 将控制指令封包成can数据下发；接收来自底盘到can数据解包并发布 -->
+    <node pkg="can_unpack" type="can_unpack" name="can_unpack" output="screen">
+        <remap from="cmd_XUV25B" to="$(arg cmd_topic_name)"/>
+        <param name="can0_port_name" type="string" value="$(arg can0_port_name)"/>
+        <param name="can1_port_name" type="string" value="$(arg can1_port_name)"/>
+    </node>
+
+    <!-- 针对can解包后发出的原始数据进行滤波，分类等处理后再次发布新的gnss imu odom话题 -->
+    <node pkg="can_unpack" type="imu_gnss_process" name="imu_gnss_process" output="screen" />
+
+    <!-- 对imu数据进行滤波 -->
+    <!-- <node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
+        <remap from="/imu/data_raw" to="/imu/adjusted_data" />
+        <remap from="/imu/data"     to="/imu/filtered_data" />
+        <param name="do_bias_estimation" value="true"/>
+        <param name="do_adaptive_gain" value="true"/>
+        <param name="use_mag" value="false"/>
+        <param name="gain_acc" value="0.01"/>
+        <param name="gain_mag" value="0.01"/>
+        <param name="publish_debug_topics" value="false"/>
+        <param name="publish_tf" value="false"/>
+    </node> -->
+
+    <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick" output="screen" respawn="false" >
+        <remap from="/imu/data_raw" to="/imu/raw_data" />
+        <remap from="/imu/data"     to="/imu/filtered_data" />
+        <param name="use_mag" value="false" />
+        <param name="use_magnetic_field_msg" value="false" />
+        <param name="publish_tf" value="false"/>
+    </node> -->
+
+</launch>

@@ -1,0 +1,32 @@
+<launch>
+    
+    <arg name="resolution" default="0.2"/>
+    <arg name="width" default="40.0"/>              <!-- 动态点滤除、SLAM建图的范围（正方形边长） width/res ~= 200 此时10hz左右 -->
+    <arg name="occupancy_threshold" default="0.7"/> <!-- 动态点判断阈值，0.0~1.0，越大则动态点越多  -->
+    <arg name="beam_num" default="720"/>
+    <arg name="log_odds_increase" default="0.15"/>
+    <arg name="log_odds_decrease" default="0.25"/>
+
+    <arg name="input_pointcloud_topic" default="/all_lidars_preprocessed_without_ground_ros"/> <!-- 来自lidar_preprocess输出  -->
+    <arg name="input_pointcloud_ground_topic" default="/all_lidars_preprocessed_ground_ros"/> <!-- 来自lidar_preprocess输出（仅在doMurgeTheGroundPoints=1有用）  -->
+    <arg name="input_odom_topic" default="/odom_by_imu_gnss"/> <!-- 来自组合惯导输出，/map -> /odom，/odom是惯导位姿（车体）  -->
+
+    <arg name="doMurgeTheGroundPoints" default="true" /> <!-- true：使用无地面的输入点云进行动态点剔除，最后add地面点作为总输出；false：使用无地面的输入点云进行动态点剔除后直接输出  -->
+
+
+    <node pkg="lidar_preprocess" type="dynamic_filter" name="dynamic_filter" output="screen">
+        <param name="resolution" value="$(arg resolution)"/>
+        <param name="width" value="$(arg width)"/>
+        <param name="occupancy_threshold" value="$(arg occupancy_threshold)"/>
+        <param name="beam_num" value="$(arg beam_num)"/>
+        <param name="log_odds_increase" value="$(arg log_odds_increase)"/>
+        <param name="log_odds_decrease" value="$(arg log_odds_decrease)"/>
+        <param name="input_pointcloud_topic" value="$(arg input_pointcloud_topic)"/>
+        <param name="input_pointcloud_ground_topic" value="$(arg input_pointcloud_ground_topic)"/>
+        <param name="input_odom_topic" value="$(arg input_odom_topic)"/>
+
+        <param name="doMurgeTheGroundPoints" value="$(arg doMurgeTheGroundPoints)" />
+
+    </node>
+
+</launch>

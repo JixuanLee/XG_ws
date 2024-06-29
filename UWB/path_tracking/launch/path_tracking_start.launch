@@ -1,0 +1,10 @@
+<!-- 实现小车对目标轨迹的实时跟随效果 -->
+<launch>
+    <arg name="odom_topic_name" default="odom" />   <!--修改odom话题，由底盘发布-->
+
+    <!-- 1.启动path_tracking主程序，发布原始控制命令数据 -->
+    <node pkg="path_tracking" type="path_tracking" name="path_tracking" output="screen">
+        <remap from="odom" to="$(arg odom_topic_name)"/>
+    </node>
+
+</launch>

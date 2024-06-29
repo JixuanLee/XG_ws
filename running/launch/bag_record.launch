@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- [1] 启动 多雷达解包 程序 -->
+    <include file="$(find rslidar_sdk)/launch/multi_lidar_start.launch" />
+
+    <!-- [2] 启动 can口 gnss imu radar数据收发解包滤波 程序 -->
+    <include file="$(find can_unpack)/launch/can_unpack_start.launch" />
+
+</launch>

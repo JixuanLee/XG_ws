@@ -1,0 +1,8 @@
+bool    activation
+bool    coordinates_valid
+uint8   region_id
+geometry_msgs/Point point1
+geometry_msgs/Point point2
+
+---
+bool    sucess

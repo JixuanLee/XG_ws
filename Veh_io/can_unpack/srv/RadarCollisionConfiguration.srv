@@ -1,0 +1,8 @@
+bool    warning_reset
+bool    activation
+bool    min_time_valid
+float32 min_time
+bool    clear_regions
+
+---
+bool    sucess

@@ -1,0 +1,24 @@
+bool    max_distance_valid
+bool    sensor_id_valid
+bool    radar_power_cfg_valid
+bool    output_type_cfg_valid
+bool    send_quality_cfg_valid
+bool    send_ext_info_cfg_valid
+bool    sort_index_valid
+bool    ctrl_relay_cfg_valid
+bool    store_in_nvm_valid
+bool    rcs_threshold_valid
+
+uint16  max_distance
+uint8   sensor_id
+uint8   radar_power_cfg
+uint8   output_type_cfg
+bool    send_quality_cfg
+bool    send_ext_info_cfg
+uint8   sort_index
+bool    ctrl_relay_cfg
+bool    store_in_nvm
+bool    rcs_threshold
+
+---
+bool    sucess

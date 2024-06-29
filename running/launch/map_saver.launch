@@ -1,0 +1,5 @@
+<launch>
+
+    <include file="$(find map_saver)/launch/map_saver.launch"/>
+
+</launch>

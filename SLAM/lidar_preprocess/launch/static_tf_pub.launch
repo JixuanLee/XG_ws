@@ -1,0 +1,21 @@
+<launch>
+
+    <!-- odom是建图启动的初始位姿or加载的PCD地图的初始位姿，该tf后期利用惯导数据在cpp发布 -->
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="map2odom"           args=" 0 0  0     0         0        0        /map   /odom"          output="screen" /> -->
+    
+    <!-- lego_loam & yxloam -->
+    <!-- 在legoloam中，现在将odom lidar_init vveh坐标轴是旋转的，其余是正常的 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="odom2vodom"         args=" 0 0  0     1.570795  0        1.570795 /odom  /vodom"         output="screen" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="vodom2vlidar_init"  args=" 0 0 -0.71  0         0        0        /vodom /vlidar_init"   output="screen" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="vveh2veh"           args=" 0 0  0    -1.570795 -1.570795 0        /vveh  /veh"           output="screen" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="vveh2vrslidar_link" args=" 0 0 -0.71  0         0        0        /vveh  /vrslidar_link" output="screen" />
+    
+    <!-- aloam -->
+    <!-- lidar_init是SLAM时的雷达初始位姿，这个和/veh -> /rslidar_link 完全相等 -->
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="odom2lidar_init" args="-0.71 0 0 0 0 0  /odom /lidar_init" output="screen" /> -->
+
+
+    <!-- 车辆上的各个传感器坐标系与车辆坐标系的静态坐标变换 -->
+    <include file="$(find common)/launch/sensors_static_tf.launch"/>
+
+</launch>

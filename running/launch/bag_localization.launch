@@ -1,0 +1,26 @@
+<launch>
+
+    <!-- <param name="/use_sim_time" value="true" /> -->
+
+    <!-- [0] 加载 车辆模型 -->
+    <include file="$(find common)/launch/veh_model.launch"/>
+
+    <!-- [1] 启动 传感器基础静态坐标变换 程序 -->
+    <include file="$(find common)/launch/sensors_static_tf.launch"/>
+
+    <!-- [2] 启动 imu_gnss预处理 程序 -->
+    <include file="$(find can_unpack)/launch/bag_can_unpack_start.launch"/>
+
+    <!-- [3] 启动 点云拼接&预处理 程序 -->
+    <include file="$(find lidar_preprocess)/launch/single_lidar_preprocess.launch"/>
+
+    <!-- [4] 启动 加载地图 程序 -->
+    <include file="$(find ndt_localizer)/launch/map_loader.launch"/>
+
+    <!-- [5] 启动 NDT算法定位 程序 -->
+    <include file="$(find ndt_localizer)/launch/ndt_localizer_core.launch"/>
+
+    <!-- [6] 启动 rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find common)/rviz/localization.rviz" />
+
+</launch>

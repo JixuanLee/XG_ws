@@ -1,0 +1,27 @@
+<launch>
+
+    <!-- [0] 加载 车辆模型 -->
+    <include file="$(find common)/launch/veh_model.launch" />
+
+    <!-- [1] 启动 SLAM基础静态坐标变换 程序 -->
+    <include file="$(find lidar_preprocess)/launch/static_tf_pub.launch" />
+
+    <!-- [2] 启动 雷达解包 程序 -->
+    <include file="$(find rslidar_sdk)/launch/single_lidar_start.launch" />
+
+    <!-- [3] 启动 can口 gnss imu radar数据收发解包滤波 程序 -->
+    <include file="$(find can_unpack)/launch/can_unpack_start.launch" />
+
+    <!-- [4] 启动 点云预处理 程序 -->
+    <include file="$(find lidar_preprocess)/launch/single_lidar_preprocess.launch" />
+
+    <!-- [5] 启动 动态点滤除 程序 -->
+    <include file="$(find lidar_preprocess)/launch/dynamic_filter.launch" />
+
+    <!-- [6] 启动 yxloam建图 程序 -->
+    <include file="$(find lego_loam)/launch/run.launch" />
+
+    <!-- [7] 启动 rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find common)/rviz/slam.rviz" />
+
+</launch>

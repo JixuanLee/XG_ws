@@ -1,0 +1,64 @@
+<!-- 启动对目标点的实时跟随效果 -->
+<launch>
+
+    <arg name="Gap"              default="1.5" />   <!-- 前侧两个基站的间距 -->
+    <arg name="Target_L"         default="1.0" />   <!-- 目标尺寸，可认为是目标包裹圆柱的半径 -->
+    <arg name="Dis_far"          default="12.0" />  <!-- 距离目标的巡航距离，超过该值后按照该值计算 -->
+    <arg name="Dis_stop_bias"    default="3.5" />   <!-- 距离目标的减速停车距离，实际减速停车距离会加上Target_L -->
+    <arg name="Dis_brake_bias"   default="2.0" />   <!-- 距离目标的刹车距离，实际刹车距离会加上Target_L -->
+    <arg name="Dis_rear_bias"    default="1.0" />   <!-- 距离目标的倒车距离，实际倒车距离会加上Target_L -->
+    <arg name="Angle_reverse"    default="88.0" />  <!-- tag目标的角度死区，单位deg。左右超出该角度会停车 -->
+    <arg name="Rear_angle_limit" default="60.0" />  <!-- tag目标在倒车逻辑下的角度死区，单位deg。左右超出该角度会停车 -->
+
+    <arg name="Stop_linear_coefficient"  default="0.75" />  <!-- 减速停车时线速度的衰退系数。即触发减速停车逻辑时，最终线速度会在原有基础上乘以该系数 -->
+    <arg name="Stop_linear_threshold"    default="0.50" />  <!-- 减速停车时线速度阈值，低于阈值即可停车 -->
+    <arg name="Stop_angular_coefficient" default="1.10" />  <!-- 减速停车时角速度的衰退系数。即触发减速停车逻辑时，最终角速度会在原有基础上乘以该系数 -->
+
+    <arg name="Lat_P"             default="3.0" />
+    <arg name="Lat_I"             default="0.04" />
+    <arg name="Lat_D"             default="0.23" />  <!-- 横向控制时的PID系数 -->
+    <arg name="Angular_max"       default="2.20" />  <!-- 角速度最大值，单位rad/s -->
+    <arg name="Angular_min"       default="-2.20" /> <!-- 角速度最小值，单位rad/s -->
+    <arg name="Angular_delta_max" default="15.0" />  <!-- 单次变化角速度变化量最大值（总变化量会与频率挂钩），单位deg/s -->
+
+    <arg name="Lon_P"             default="0.20" />
+    <arg name="Lon_I"             default="0.06" />
+    <arg name="Lon_D"             default="0.04" />  <!-- 纵向控制时的PID系数 -->
+    <arg name="Linear_max"        default="3.50" />  <!-- 线速度最大值，单位m/s -->
+    <arg name="Linear_min"        default="-1.00" /> <!-- 线速度最小值，单位m/s 目前该值即为倒车时速度，恒定值 -->
+    <arg name="Linear_delta_max"  default="0.25" />  <!-- 单次变化线速度变化量最大值（总变化量会与频率挂钩），单位m/s -->
+
+    <!-- 1.启动uwb数据解包模块，发布目标点相关数据 -->
+    <include file="$(find uwb_unpack)/launch/uwb_unpack_start.launch"/>
+
+    <!-- 2.启动uwb主程序，发布原始控制命令数据 -->
+    <node pkg="uwb_follow" type="uwb_follow" name="uwb_follow" output="screen" required="true">
+        <param name="Gap"              type="double" value="$(arg Gap)"/>
+        <param name="Target_L"         type="double" value="$(arg Target_L)"/>
+        <param name="Dis_rear_bias"    type="double" value="$(arg Dis_rear_bias)"/>
+        <param name="Dis_brake_bias"   type="double" value="$(arg Dis_brake_bias)"/>
+        <param name="Dis_stop_bias"    type="double" value="$(arg Dis_stop_bias)"/>
+        <param name="Angle_reverse"    type="double" value="$(arg Angle_reverse)"/>
+        <param name="Rear_angle_limit" type="double" value="$(arg Rear_angle_limit)"/>
+
+        <param name="Stop_linear_coefficient"  type="double" value="$(arg Stop_linear_coefficient)"/>
+        <param name="Stop_linear_threshold"    type="double" value="$(arg Stop_linear_threshold)"/>
+        <param name="Stop_angular_coefficient" type="double" value="$(arg Stop_angular_coefficient)"/>
+
+        <param name="Lat_P"             type="double" value="$(arg Lat_P)"/>
+        <param name="Lat_I"             type="double" value="$(arg Lat_I)"/>
+        <param name="Lat_D"             type="double" value="$(arg Lat_D)"/>
+        <param name="Angular_max"       type="double" value="$(arg Angular_max)"/>
+        <param name="Angular_min"       type="double" value="$(arg Angular_min)"/>
+        <param name="Angular_delta_max" type="double" value="$(arg Angular_delta_max)"/>
+
+        <param name="Lon_P"             type="double" value="$(arg Lon_P)"/>
+        <param name="Lon_I"             type="double" value="$(arg Lon_I)"/>
+        <param name="Lon_D"             type="double" value="$(arg Lon_D)"/>
+        <param name="Linear_max"        type="double" value="$(arg Linear_max)"/>
+        <param name="Linear_min"        type="double" value="$(arg Linear_min)"/>
+        <param name="Linear_delta_max"  type="double" value="$(arg Linear_delta_max)"/>
+
+    </node>
+
+</launch>

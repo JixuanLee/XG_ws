@@ -1,0 +1,46 @@
+<launch>
+
+<!-- TODO : 当前SLAM在XG试验场，在高度落差实际13m左右时，建图（无IMU融合）的高度落差高达60m。。。why -->
+<!-- TODO : XG的惯导有点垃圾的样子，融合了他的IMU，没有效果提升，还在某些情况下容易出现SLAM定位失效，坏。 -->
+<!-- TODO : XG在大门口花坛处，走一圈后由于第一行的原因，产生了地面点高度落差，本来想通过回环补救（调.h的2个参数：回环距离+得分阈值） -->
+<!-- TODO : （续line3）但是由于bag没有让轨迹交叉，导致回环的效果几乎没有。 -->
+
+    <arg name="point_cloud_topic" default="/rslidar_points_32"/> <!--  /rslidar_points_32  最好使用原始、量大的点云-->
+    <arg name="forSlamPointCloudTopic" default="/static_point_ros"/> <!-- /static_point_ros  /all_lidars_preprocessed_ros 用于建图的预处理后点云-->
+    <arg name="imu_topic" default="/imu/raw_data111"/> <!-- 故意写错"/imu/raw_data"可以避免IMU信息与SLAM融合。 -->
+
+    <!-- 为了防止人在车附近启动建图后，前几秒人站在车辆附近被认为静态点，因此dropout掉前max_delay帧 -->
+    <!-- XG：[30-85] 左右适合，建议自己多调调 -->
+    <!-- 如果是现场进行在线建图，推荐：使用较大的max_delay，并在启动建图后，人员尽快离开车辆附近并保持移动 -->
+    <!-- 车辆在起始点待一段时间再运动建图（因为dropout了前n帧，需要车辆在原地等待进行起始点附近的地图创建） -->
+    <!-- 同时尽可能创造[回环]场景，帮助SLAM回环。 -->
+    <arg name="max_delay" default="50"/>
+
+    <!--- Sim Time -->
+    <!-- <param name="/use_sim_time" value="true" /> -->
+
+    <!--- Run Rviz-->
+    <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find lego_loam)/launch/test.rviz" /> -->
+
+    <!--- TF -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="camera_init_to_map"  args="0 0 0 1.570795   0        1.570795 /map    /camera_init 10" /> -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0 0 0 -1.570795 -1.570795 0        /camera /base_link   10" /> -->
+
+    <!--- LeGO-LOAM -->    
+    <node pkg="lego_loam" type="imageProjection"    name="imageProjection">
+        <param name="point_cloud_topic" value="$(arg point_cloud_topic)" />
+    </node>
+
+    <node pkg="lego_loam" type="featureAssociation" name="featureAssociation" output="screen">
+        <param name="imu_topic" value="$(arg imu_topic)" />
+    </node>
+
+    <node pkg="lego_loam" type="mapOptmization"     name="mapOptmization"     output="screen">
+        <param name="imu_topic" value="$(arg imu_topic)" />
+        <param name="forSlamPointCloudTopic" value="$(arg forSlamPointCloudTopic)" />
+        <param name="max_delay" value="$(arg max_delay)" />
+    </node>
+    
+    <node pkg="lego_loam" type="transformFusion"    name="transformFusion"    output="screen"/>
+
+</launch>

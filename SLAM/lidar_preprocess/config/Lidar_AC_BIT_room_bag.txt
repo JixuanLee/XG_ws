@@ -1,0 +1,58 @@
+#所有节点的数据都需要写到这个文件中
+#点云预处理节点
+#车体坐标系原点暂定车体中央位置
+ground_remove_and_point_concat:
+  filter_z_min: -1
+  filter_z_max: 3
+  min_dist: 0.2 #过近点滤除阈值
+  leaf_size: 0.2 #降采样参数
+  cell_size: 0.3 #栅格尺寸，越小则栅格数量越多，精准但耗算力
+  z_threshold: 3 #点云高度上限，滤除过高点阈值
+  y_threshold: 0.5 #1/2的车身Y方向尺度（车宽，左右向）//1.0
+  x_threshold: 0.5 #1/2的车身X方向尺度（车长，前后向）//1.6
+  ground_remove_threshold: 0.3 #同一xy处z的跳变阈值，小于此则为地面点
+  ground_z: 0 #地面大概高度
+  ground_beyond_threshold: 0.35 #这个值+地面大概高度以上的点肯定被考虑为非地面点
+
+  middle_lidar_sub_topic: /rslidar_points_32
+  front_lidar_sub_topic: /rslidar_points_16A
+  left_lidar_sub_topic: /rslidar_points_16B
+  right_lidar_sub_topic: /rslidar_points_16C
+
+  T_middle2veh:  #32
+  [	1,  		0, 		0,  		0,
+  	0,  		1., 		0.,  		0,
+  	0,  		0.,  		1.,  		0,
+  	0.,  		0.,  		0.,  		1.	]
+  T_front2middle:  #16A
+  [	1,  		0, 		0,  		0,
+  	0,  		1., 		0.,  		-0.8,
+  	0,  		0.,  		1.,  		0,
+  	0.,  		0.,  		0.,  		1.	]
+  T_left2middle:  #16B
+  [	1,  		0, 		0,  		0,
+  	0,  		1., 		0.,  		0,
+  	0,  		0.,  		1.,  		0,
+  	0.,  		0.,  		0.,  		1.	]
+  T_right2middle:  #16C
+  [	0.99939,  		0.0349, 		0,  		0.45,
+  	-0.0349,  		0.99939, 		0.,  		0.58,
+  	0,  		0.,  		1.,  		0,
+  	0.,  		0.,  		0.,  		1.	]
+
+#  T_不变:
+#  [	1,  		0, 		0,  		0,
+#  	0,  		1., 		0.,  		0,
+#  	0,  		0.,  		1.,  		0,
+#  	0.,  		0.,  		0.,  		1.	]
+
+
+#  RVIZ:X是红色轴（激光雷达正前方为正），Y是绿色轴（激光雷达侧方，右手坐标系），Z是蓝色轴（激光雷达向上为正，右手坐标系）
+#  激光雷达的Z零面是自己激光源平面
+#  T_沿X旋转x°，沿Y旋转y，沿Z旋转z，沿X平移a，沿Y平移b，沿Z平移c，总体缩放k:
+#  [	k*cosy*cosz,  				-k*cosy*sinz, 				k*siny,  		a,
+#  	k*(sinx*siny*cosz+cosx*sinz),  		k*(cosx*cosz-sinx*siny*sinz), 		-k*sinx*cosy,  		b,
+#  	k*(sinx*sinz-cosx*siny*cosz),  		k(cosx*siny*sinz+sinx*cosz),  		k*cosx*cosy,  		c,
+#  	0.,  					0.,  					0.,  			1.	]
+
+

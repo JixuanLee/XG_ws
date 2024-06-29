@@ -1,0 +1,20 @@
+<!-- 实现小车对目标点的实时跟随效果 -->
+<launch>
+    <arg name="odom_topic_name" default="odom" />           <!--修改odom话题，由小车底盘发出的里程计话题名-->
+    <arg name="cmd_topic_name" default="cmd_scoutmini" />           <!--修改cmd话题，控制小车运动的话题名-->
+
+    <!-- 1.启动uwb模块，发布目标点相关数据 -->
+    <include file="$(find uwb_follow)/launch/uwb_follow_start.launch"/>
+
+    <!-- 2.发布小车控制命令，小车开始运动 -->
+    <include file="$(find vehicle_control)/launch/run_scoutmini.launch">
+        <arg name="odom_topic_name" default="$(arg odom_topic_name)" />
+        <arg name="cmd_topic_name" default="$(arg cmd_topic_name)" /> 
+    </include>
+
+    <!-- 3.（可选）将小车运动过程的路径进行记录，写入本地txt -->
+    <include file="$(find path_generator)/launch/path_record.launch">
+        <arg name="odom_topic_name" default="$(arg odom_topic_name)"/>  <!-- 当前记录的路径的里程计话题 -->
+    </include>
+
+</launch>

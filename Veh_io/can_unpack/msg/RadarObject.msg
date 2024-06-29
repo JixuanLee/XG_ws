@@ -1,0 +1,14 @@
+uint8 id
+geometry_msgs/PoseWithCovariance position
+geometry_msgs/TwistWithCovariance relative_velocity
+geometry_msgs/AccelWithCovariance relative_acceleration
+
+uint8 dynamic_property
+float32 rcs
+uint8 meas_state
+uint8 prob_of_exist
+uint8 class_type
+float32 orientation_angle
+float32 length
+float32 width
+uint8 coll_det_region_bitfield

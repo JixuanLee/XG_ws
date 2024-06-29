@@ -1,0 +1,9 @@
+<launch>
+    <arg name="odom_topic_name" default="odom"/>        <!-- 当前记录的路径的里程计话题 -->
+
+    <!-- 记录当前/odom话题下的位置，并写入txt -->
+    <node pkg="path_generator" type="path_record" name="path_record" output="screen">
+        <remap from="odom" to="$(arg odom_topic_name)"/>
+        <param name="is_roslaunch" type="bool" value="true"/>   <!-- 是否由roslaunch启动，影响后续工作路径，无须修改 -->
+    </node>
+</launch>

@@ -1,0 +1,28 @@
+<launch>
+
+    <!-- 针对can解包后发出的原始数据进行滤波，分类等处理后再次发布新的gnss imu odom话题 -->
+    <node pkg="can_unpack" type="imu_gnss_process" name="imu_gnss_process" output="screen" />
+
+    <!-- 对imu数据进行滤波 -->
+    <!-- <node pkg="imu_complementary_filter" type="complementary_filter_node" name="complementary_filter_gain_node" output="screen">
+        <remap from="/imu/data_raw" to="/imu/raw_data" />
+        <remap from="/imu/data"     to="/imu/filtered_data" />
+        <param name="do_bias_estimation" value="true"/>
+        <param name="do_adaptive_gain" value="true"/>
+        <param name="use_mag" value="false"/>
+        <param name="gain_acc" value="0.01"/>
+        <param name="gain_mag" value="0.01"/>
+        <param name="publish_debug_topics" value="false"/>
+        <param name="publish_tf" value="false"/>
+    </node> -->
+
+    <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_madgwick" output="screen" respawn="false" >
+        <remap from="/imu/data_raw" to="/imu/raw_data" />
+        <remap from="/imu/data"     to="/imu/filtered_data" />
+        <param name="use_mag" value="false" />
+        <param name="use_magnetic_field_msg" value="false" />
+        <param name="publish_tf" value="false"/>
+    </node> -->
+
+    
+</launch>
