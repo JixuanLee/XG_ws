@@ -1,0 +1,6 @@
+<launch>
+
+    <node pkg="common" type="generate_csv_for_plot" name="generate_csv_for_plot" output="screen">
+    </node>
+
+</launch>

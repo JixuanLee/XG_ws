@@ -1,0 +1,35 @@
+<launch>
+    <!-- 1.Sub Topics -->
+    <arg name="rviz_pose_topic"      default="/initialpose"/>
+    <arg name="map_points_topic"     default="/global_laser_cloud_map" />
+    <arg name="current_points_topic" default="/all_lidars_preprocessed_ros"/>
+    <arg name="use_gnss"             default="true"/>
+    <arg name="gnss_topic"           default="/odom_by_imu_gnss"/>
+
+    <!-- 2.Pub Topics -->
+    <arg name="ndt_pose_topic" default="/ndt_out/ndt_pose" />
+
+    <!-- 4.NDT Main Param, useful for 16/32 lines LiDAR -->
+    <arg name="trans_epsilon"   default="0.05"  doc="The maximum difference between two consecutive transformations in order to consider convergence" />
+    <arg name="step_size"       default="0.1"   doc="The newton line search maximum step length" />
+    <arg name="resolution"      default="2.0"   doc="The ND voxel grid resolution" />
+    <arg name="max_iterations"  default="300.0" doc="The number of iterations required to calculate alignment" />
+    <arg name="converged_param_transform_probability" default="5.0" doc="The threshold of converge" />
+
+    <!-- 5.Run -->
+    <node pkg="ndt_localizer" type="ndt_localizer_core" name="ndt_localizer_core" output="screen">
+        <param name="rviz_pose_topic"       value="$(arg rviz_pose_topic)" />
+        <param name="map_points_topic"      value="$(arg map_points_topic)" />
+        <param name="current_points_topic"  value="$(arg current_points_topic)" />
+        <param name="use_gnss"              value="$(arg use_gnss)" />
+        <param name="gnss_topic"            value="$(arg gnss_topic)" />
+        
+        <param name="ndt_pose_topic" value="$(arg ndt_pose_topic)" />
+
+        <param name="trans_epsilon"  value="$(arg trans_epsilon)" />
+        <param name="step_size"      value="$(arg step_size)" />
+        <param name="resolution"     value="$(arg resolution)" />
+        <param name="max_iterations" value="$(arg max_iterations)" />
+        <param name="converged_param_transform_probability" value="$(arg converged_param_transform_probability)" />
+    </node>
+</launch>

@@ -1,0 +1,5 @@
+float64 delta_angle_deg
+bool save_map
+---
+float64 angle_deg
+float64 angle_rad

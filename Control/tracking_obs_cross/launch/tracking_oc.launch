@@ -1,0 +1,31 @@
+<launch>
+
+    <arg name="OdomSubTopic" default="/odom_by_imu_gnss"/> 
+    <arg name="PathSubTopic" default="/global_planning/sPath"/> <!-- 全局路径: sPath      局部路径: pdt_path_in_map  or  pdt_path_in_veh-->
+    <arg name="DesPointSubTopic" default="/move_base_simple/goal"/>
+    <arg name="CmdPubTopic" default="/cmd_XUV25B"/>
+    <arg name="BrakePubTopic" default="/brake"/>
+
+    <arg name="aimPivotSteerAngle" default="285.0"/> <!-- 越障第一步：到指定位置原地转向，该值为转向的目标角度，正北0°，单位deg-->
+    <arg name="aimDisToMove" default="0.5"/> <!-- 越障第二步：原地转向后，倒车一段距离，使得车辆与障碍物贴近，单位m-->
+
+    <arg name="isMapPath_flag" default="true"/> <!-- 使用/map下的路径: true      使用/veh下的路径: false-->
+
+    <node pkg="tracking_obs_cross" type="main_path_follow_oc" name="path_follow_oc" output="screen">
+
+        <rosparam command="load" file="$(find tracking_obs_cross)/config/param_OC.yaml" /><!-- 低速: param_LS  高速: param_HS-->
+
+        <param name="OdomSubTopic" value="$(arg OdomSubTopic)"/>
+        <param name="PathSubTopic" value="$(arg PathSubTopic)"/>
+        <param name="CmdPubTopic" value="$(arg CmdPubTopic)"/>
+        <param name="DesPointSubTopic" value="$(arg DesPointSubTopic)"/>
+        <param name="BrakePubTopic" value="$(arg BrakePubTopic)"/>
+
+        <param name="aimPivotSteerAngle" value="$(arg aimPivotSteerAngle)"/>
+        <param name="aimDisToMove" value="$(arg aimDisToMove)"/>
+
+        <param name="isMapPath_flag" value="$(arg isMapPath_flag)"/>
+
+    </node>
+
+</launch>

@@ -1,0 +1,31 @@
+<launch>
+    <!-- 启动该launch后，workspace下source后输入rosservice call /map_calibration 后，tab补齐。  -->
+    <arg name="map_name"  default=""/>      <!--- 用以指定要修改的pcd文件，空字符串代表加载最新的地图文件 -->
+    <arg name="map_topic" default="/global_laser_cloud_map"/>  <!--- 生成的点云地图话题 -->
+    <arg name="is_bag"  default="true"/>    <!--- 是否通过bag包进行位置标定， true——使用bag标定， false——实时数据标定 -->
+
+    <!-- 0. 加载 车辆模型、静态坐标变换 -->
+    <include file="$(find common)/launch/veh_model.launch"/>
+    <include file="$(find common)/launch/sensors_static_tf.launch"/>
+
+    <!-- 1. 捕获当前gnss的定位信息 -->
+    <!-- 2. 捕获当前激光雷达的点云信息 -->
+    <group if="$(arg is_bag)">
+        <include file="$(find can_unpack)/launch/bag_can_unpack_start.launch"/>
+    </group>
+    <group unless="$(arg is_bag)">
+        <include file="$(find can_unpack)/launch/can_unpack_start.launch"/>
+        <include file="$(find rslidar_sdk)/launch/single_lidar_start.launch" />
+    </group>
+    <include file="$(find lidar_preprocess)/launch/single_lidar_preprocess.launch" />
+
+    <!-- 3. 启动地图标定节点 -->
+    <node pkg="common" type="map_calibration" name="map_calibration" output="screen">
+        <param name="map_name"  value="$(arg map_name)" />
+        <param name="map_topic" value="$(arg map_topic)" />
+    </node>
+
+    <!-- 4. rviz -->
+    <node pkg="rviz" name="rviz" type="rviz" args="-d $(find common)/rviz/map_calibration.rviz" />
+
+</launch>

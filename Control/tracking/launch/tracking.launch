@@ -1,0 +1,26 @@
+<launch>
+
+    <arg name="OdomSubTopic" default="/odom_by_imu_gnss"/> 
+    <arg name="PathSubTopic" default="/local_planning/pdt_path_in_map"/> <!-- 全局路径: sPath      局部路径: pdt_path_in_map  or  pdt_path_in_veh-->
+    <arg name="DesPointSubTopic" default="/move_base_simple/goal"/>
+    <arg name="CmdPubTopic" default="/cmd_XUV25B"/>
+    <arg name="BrakePubTopic" default="/brake"/>
+
+    <arg name="isMapPath_flag" default="true"/> <!-- 使用/map下的路径: true      使用/veh下的路径: false-->
+
+    <node pkg="tracking" type="main_path_follow" name="path_follow" output="screen">
+
+        <rosparam command="load" file="$(find tracking)/config/param_LS.yaml" /><!-- 低速: param_LS  高速: param_HS-->
+        <rosparam command="load" file="$(find tracking)/config/param_HS.yaml" /><!-- 低速: param_LS  高速: param_HS-->
+
+        <param name="OdomSubTopic" value="$(arg OdomSubTopic)"/>
+        <param name="PathSubTopic" value="$(arg PathSubTopic)"/>
+        <param name="CmdPubTopic" value="$(arg CmdPubTopic)"/>
+        <param name="DesPointSubTopic" value="$(arg DesPointSubTopic)"/>
+        <param name="BrakePubTopic" value="$(arg BrakePubTopic)"/>
+
+        <param name="isMapPath_flag" value="$(arg isMapPath_flag)"/>
+
+    </node>
+
+</launch>

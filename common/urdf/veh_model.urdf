@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot name="XUV25B">
+
+<!-- Vehicle model frame_id: /veh. 
+Without GNSS-IMU (this package was originally intended to replace GNSS-IMU...), which can broadcast /map->/veh, 
+the NDT node will broadcast /map ->/veh TF transformation -->
+        
+    <link name="veh">
+        <visual>
+            <origin xyz="0 0 -1.0" rpy="0 0 0" />
+            <geometry>
+                <!-- <box size="3.2 2.1 1.0" /> -->
+                <mesh filename="package://common/urdf/XG-veh.stl"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0.15 0.15 0.7 1.0" />
+            </material>
+        </visual>
+    </link>
+
+</robot>

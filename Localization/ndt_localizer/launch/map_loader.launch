@@ -1,0 +1,10 @@
+<launch>
+    <arg name="map_name"  default=""/>      <!--- 空字符串代表加载最新的地图文件 -->    
+    <arg name="map_topic" default="/global_laser_cloud_map"/>
+
+    <!--- MapLoader -->    
+    <node pkg="ndt_localizer" type="map_loader"    name="map_loader"    output="screen">
+        <param name="map_name" value="$(arg map_name)"/>
+        <param name="map_topic" value="$(arg map_topic)"/>
+    </node>
+</launch>

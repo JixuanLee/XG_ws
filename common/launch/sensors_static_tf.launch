@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- 固定静态坐标变换，是车体中心与middle雷达的位姿变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="veh2rslidar_link" args="-0.71 0 0.5 0 0 0 /veh /rslidar_link" output="screen" />
+
+    <!-- 固定静态坐标变换，是车体中心与IMU-GNSS组合惯导的位姿变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="veh2imu_gnss" args="0.8 0.89 0 0 0 0 /veh /imu_gnss" output="screen" />
+
+</launch>
